@@ -11,4 +11,6 @@ struct Course
     char grade;
 };
 
+int gradeToPoint(char grade);
+
 #endif

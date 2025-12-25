@@ -4,6 +4,29 @@
 
 using namespace std;
 
+int gradeToPoint(char grade)
+{
+    switch (grade)
+    {
+    case 'S':
+        return 10;
+    case 'A':
+        return 9;
+    case 'B':
+        return 8;
+    case 'C':
+        return 7;
+    case 'D':
+        return 6;
+    case 'E':
+        return 5;
+    case 'F':
+        return 0;
+    default:
+        return -1; // Invalid grade
+    }
+}
+
 int main()
 {
     int n;
@@ -28,6 +51,8 @@ int main()
         c.grade = toupper(c.grade);
 
         courses.push_back(c);
+
+        cout << "Grade Point: " << gradeToPoint(c.grade) << endl;
     }
 
     cout << "\nCourse details entered:\n";
