@@ -2,6 +2,7 @@
 #include <vector>
 #include <iomanip>
 #include <fstream>
+#include <algorithm>
 #include "../include/course.h"
 
 using namespace std;
@@ -28,6 +29,41 @@ int gradeToPoint(char grade)
     default:
         return -1; // Invalid grade
     }
+}
+
+// Search function to find a course by name
+// algorithm: linear search
+// Time Complexity: O(n)
+void searchCourse(const vector<Course> &courses, const string &key)
+{
+    bool found = false;
+
+    for (const auto &c : courses)
+    {
+        if (c.name == key)
+        {
+            cout << "\nCourse Found: \n";
+            cout << "Name: " << c.name
+                 << ", Credits: " << c.credits
+                 << ", Grade: " << c.grade << endl;
+            found = true;
+            break;
+        }
+    }
+    if (!found)
+    {
+        cout << "\nCourse not found. \n";
+    }
+}
+
+bool sortByCredits(const Course &a, const Course &b)
+{
+    return a.credits > b.credits; // descending
+}
+
+bool sortByGradePoint(const Course &a, const Course &b)
+{
+    return gradeToPoint(a.grade) > gradeToPoint(b.grade);
 }
 
 int main()
@@ -140,6 +176,52 @@ int main()
     else
     {
         cout << "\nError opening file for reading. \n";
+    }
+
+    int choice;
+    cout << "\n ----- Extra Operations ----- \n";
+    cout << "1. Search course by name \n";
+    cout << "2. Sort courses by credits \n";
+    cout << "3. Sort courses by grade points \n";
+    cout << "Enter choice: ";
+    cin >> choice;
+
+    if (choice == 1)
+    {
+        string key;
+        cout << "Enter course name to search: ";
+        cin >> key;
+        searchCourse(courses, key);
+    }
+    else if (choice == 2)
+    {
+        sort(courses.begin(), courses.end(), sortByCredits);
+        cout << "\nCourses sorted by credits: \n";
+
+        for (const auto &c : courses)
+        {
+            cout << c.name << " | Credits: " << c.credits
+                 << " | Grade: " << c.grade
+                 << " | Grade Point: " << gradeToPoint(c.grade)
+                 << endl;
+        }
+    }
+    else if (choice == 3)
+    {
+        sort(courses.begin(), courses.end(), sortByGradePoint);
+        cout << "\nCourses sorted by grade points: \n";
+
+        for (const auto &c : courses)
+        {
+            cout << c.name << " | Credits: " << c.credits
+                 << " | Grade: " << c.grade
+                 << " | Grade Point: " << gradeToPoint(c.grade)
+                 << endl;
+        }
+    }
+    else
+    {
+        cout << "Invalid choice. \n";
     }
 
     return 0;
