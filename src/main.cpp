@@ -32,6 +32,9 @@ int main()
     int n;
     vector<Course> courses;
 
+    int totalCredits = 0;
+    int totalGradePoints = 0;
+
     cout << "Enter number of courses: ";
     cin >> n;
 
@@ -50,16 +53,25 @@ int main()
         cin >> c.grade;
         c.grade = toupper(c.grade);
 
+        int gradePoint = gradeToPoint(c.grade);
+        int courseGradePOints = c.credits * gradePoint;
+
+        totalCredits += c.credits;
+        totalGradePoints += gradePoint * c.credits;
+
         courses.push_back(c);
-
-        cout << "Grade Point: " << gradeToPoint(c.grade) << endl;
     }
 
-    cout << "\nCourse details entered:\n";
-    for (const auto &c : courses)
+    double cgpa = 0.0;
+    if (totalCredits > 0)
     {
-        cout << c.name << " | Credits: " << c.credits << " | Grade: " << c.grade << endl;
+        cgpa = (double)totalGradePoints / totalCredits;
     }
+
+    cout << "\n------ Result Summary ------\n";
+    cout << "Total Credits: " << totalCredits << endl;
+    cout << "Total Grade Points: " << totalGradePoints << endl;
+    cout << "CGPA: " << cgpa << endl;
 
     return 0;
 }
