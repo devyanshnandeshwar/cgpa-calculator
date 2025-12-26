@@ -1,5 +1,3 @@
-g++ src/main.cpp -o cgpa
-
 # CGPA Calculator (C++)
 
 Command-line CGPA calculator in C++ that collects course details, computes CGPA using weighted grade points, saves results to a file, and supports searching and sorting operations.
