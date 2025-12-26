@@ -7,7 +7,7 @@
 
 using namespace std;
 
-// FUnction to convert grade to grade point
+// Function to convert letter grade to numeric grade point
 int gradeToPoint(char grade)
 {
     switch (grade)
@@ -31,49 +31,10 @@ int gradeToPoint(char grade)
     }
 }
 
-// Search function to find a course by name
-// algorithm: linear search
-// Time Complexity: O(n)
-void searchCourse(const vector<Course> &courses, const string &key)
-{
-    bool found = false;
-
-    for (const auto &c : courses)
-    {
-        if (c.name == key)
-        {
-            cout << "\nCourse Found: \n";
-            cout << "Name: " << c.name
-                 << ", Credits: " << c.credits
-                 << ", Grade: " << c.grade << endl;
-            found = true;
-            break;
-        }
-    }
-    if (!found)
-    {
-        cout << "\nCourse not found. \n";
-    }
-}
-
-bool sortByCredits(const Course &a, const Course &b)
-{
-    return a.credits > b.credits; // descending
-}
-
-bool sortByGradePoint(const Course &a, const Course &b)
-{
-    return gradeToPoint(a.grade) > gradeToPoint(b.grade);
-}
-
-int main()
+// Taking input from all details form the user also calculating total credits and total grade points
+void inputCourses(vector<Course> &courses, int &totalCredits, int &totalGradePoints)
 {
     int n;
-    vector<Course> courses;
-
-    int totalCredits = 0;
-    int totalGradePoints = 0;
-
     cout << "Enter number of courses: ";
     cin >> n;
 
@@ -101,15 +62,22 @@ int main()
 
         courses.push_back(c);
     }
+}
 
-    // Calculate CGPA
-    double cgpa = 0.0;
-    if (totalCredits > 0)
+// Calculate CGPA using weighted average formula
+double calculateCGPA(int totalCredits, int totalGradePoints)
+{
+    if (totalCredits == 0)
     {
-        cgpa = (double)totalGradePoints / totalCredits;
+        return 0.0;
     }
 
-    // Display course-wise details
+    return static_cast<double>(totalGradePoints) / totalCredits;
+}
+
+// display course-wise details in tabular format
+void displayCourses(const vector<Course> &courses)
+{
     cout << "\n----- Course Details -----\n";
     cout << left << setw(15) << "Course"
          << setw(10) << "Credits"
@@ -124,65 +92,80 @@ int main()
              << setw(15) << gradeToPoint(c.grade)
              << endl;
     }
+}
 
-    // Display result summary
+// Display total credits, grade points and CGPA
+void displaySummary(int totalCredits, int totalGradePoints, double cgpa)
+{
     cout << "\n------ Result Summary ------\n";
     cout << "Total Credits: " << totalCredits << endl;
     cout << "Total Grade Points: " << totalGradePoints << endl;
     cout << fixed << setprecision(2);
     cout << "CGPA: " << cgpa << endl;
+}
 
-    // Save data to file
+// Saves student course data and CGPA into a file
+void saveToFile(const vector<Course> &courses, int totalCredits, int totalGradePoints, double cgpa)
+{
     ofstream outFile("data/student.txt");
 
-    if (outFile.is_open())
+    if (!outFile.is_open())
     {
-        outFile << "Course Details\n";
-        outFile << "==========================\n";
+        cout << "Error opening file for writing.\n";
+        return;
+    }
 
-        for (const auto &c : courses)
+    outFile << "Course Details\n";
+    outFile << "-----------------\n";
+
+    for (const auto &c : courses)
+    {
+        outFile << c.name << " "
+                << c.credits << " "
+                << c.grade << "\n";
+    }
+
+    outFile << "\nTotal Credits: " << totalCredits << "\n";
+    outFile << "Total Grade Points: " << totalGradePoints << "\n";
+    outFile << fixed << setprecision(2);
+    outFile << "CGPA: " << cgpa << "\n";
+
+    outFile.close();
+}
+
+// Search function to find a course by name
+// algorithm: linear search
+// Time Complexity: O(n)
+void searchCourse(const vector<Course> &courses, const string &key)
+{
+    bool found = false;
+
+    for (const auto &c : courses)
+    {
+        if (c.name == key)
         {
-            outFile << c.name << " "
-                    << c.credits << " "
-                    << c.grade << "\n";
+            cout << "\nCourse Found: \n";
+            cout << "Name: " << c.name
+                 << ", Credits: " << c.credits
+                 << ", Grade: " << c.grade << endl;
+            found = true;
+            break;
         }
-
-        outFile << "\nTotal Credits: " << totalCredits << "\n";
-        outFile << "Total Grade Points: " << totalGradePoints << "\n";
-        outFile << fixed << setprecision(2);
-        outFile << "CGPA: " << cgpa << "\n";
-
-        outFile.close();
-        cout << "\nData saved successfully to file.\n";
     }
-    else
+    if (!found)
     {
-        cout << "\nError opening file for writing.\n";
+        cout << "\nCourse not found. \n";
     }
+}
 
-    // Read data from file
-    ifstream inFile("data/student.txt");
-
-    if (inFile.is_open())
-    {
-        cout << "\n----- Stored File Data -----\n";
-        string line;
-        while (getline(inFile, line))
-        {
-            cout << line << endl;
-        }
-        inFile.close();
-    }
-    else
-    {
-        cout << "\nError opening file for reading. \n";
-    }
-
+// Menu for searching and sorting algorithms
+void extraOperationsMenu(vector<Course> &courses)
+{
     int choice;
     cout << "\n ----- Extra Operations ----- \n";
     cout << "1. Search course by name \n";
-    cout << "2. Sort courses by credits \n";
-    cout << "3. Sort courses by grade points \n";
+    cout << "2. Sort course by credits \n";
+    cout << "3. Sort course by grade points \n";
     cout << "Enter choice: ";
     cin >> choice;
 
@@ -223,6 +206,34 @@ int main()
     {
         cout << "Invalid choice. \n";
     }
+}
+
+bool sortByCredits(const Course &a, const Course &b)
+{
+    return a.credits > b.credits; // descending
+}
+
+bool sortByGradePoint(const Course &a, const Course &b)
+{
+    return gradeToPoint(a.grade) > gradeToPoint(b.grade);
+}
+
+int main()
+{
+    vector<Course> courses;
+    int totalCredits = 0;
+    int totalGradePoints = 0;
+
+    inputCourses(courses, totalCredits, totalGradePoints);
+
+    double cgpa = calculateCGPA(totalCredits, totalGradePoints);
+
+    displayCourses(courses);
+    displaySummary(totalCredits, totalGradePoints, cgpa);
+
+    saveToFile(courses, totalCredits, totalGradePoints, cgpa);
+
+    extraOperationsMenu(courses);
 
     return 0;
 }
