@@ -1,0 +1,10 @@
+# Ignore compiled files
+*.out
+*.exe
+
+# Ignore IDE files
+.vscode/
+.idea/
+
+# Ignore temp files
+*.log
